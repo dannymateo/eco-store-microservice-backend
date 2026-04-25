@@ -66,6 +66,7 @@ public class PostgresProductRepositoryAdapter implements ProductRepositoryPort {
                 .originalPrice(product.getPriceInfo().getOriginalPrice())
                 .discountPercent(product.getPriceInfo().getDiscountPercent())
                 .finalPrice(product.getPriceInfo().getFinalPrice())
+                .stock(product.getStock())
                 .build();
     }
 
@@ -76,6 +77,7 @@ public class PostgresProductRepositoryAdapter implements ProductRepositoryPort {
                 .description(entity.getDescription())
                 .category(entity.getCategory())
                 .priceInfo(new PriceInfo(entity.getOriginalPrice(), entity.getDiscountPercent(), entity.getFinalPrice()))
+                .stock(entity.getStock())
                 .build();
     }
 }

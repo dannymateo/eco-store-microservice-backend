@@ -17,9 +17,11 @@ public class Product {
     private String description;
     private Category category;
     private PriceInfo priceInfo;
+    private Integer stock;
 
     public static Product create(String name, String description, Category category,
-                                 BigDecimal originalPrice) {
+                                 BigDecimal originalPrice, Integer stock) {
+        validateStock(stock);
         BigDecimal discountPct = category != null ? category.getDiscountPercent() : BigDecimal.ZERO;
         PriceInfo info = discountPct.compareTo(BigDecimal.ZERO) > 0
                 ? PriceInfo.withDiscount(originalPrice, discountPct)
@@ -29,11 +31,13 @@ public class Product {
                 .description(description)
                 .category(category)
                 .priceInfo(info)
+                .stock(stock)
                 .build();
     }
 
     public Product updateWith(String name, String description, Category category,
-                              BigDecimal originalPrice) {
+                              BigDecimal originalPrice, Integer stock) {
+        validateStock(stock);
         BigDecimal discountPct = category != null ? category.getDiscountPercent() : BigDecimal.ZERO;
         PriceInfo info = discountPct.compareTo(BigDecimal.ZERO) > 0
                 ? PriceInfo.withDiscount(originalPrice, discountPct)
@@ -43,7 +47,14 @@ public class Product {
                 .description(description)
                 .category(category)
                 .priceInfo(info)
+                .stock(stock)
                 .build();
+    }
+
+    private static void validateStock(Integer stock) {
+        if (stock == null || stock < 0) {
+            throw new IllegalArgumentException("El stock debe ser >= 0");
+        }
     }
 
     @Override
