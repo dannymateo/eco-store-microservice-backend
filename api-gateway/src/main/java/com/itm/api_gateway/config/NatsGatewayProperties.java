@@ -9,7 +9,8 @@ public record NatsGatewayProperties(
         Subject subject
 ) {
     public record Subject(
-            Product product
+            Product product,
+            Cart cart
     ) {
     }
 
@@ -19,6 +20,14 @@ public record NatsGatewayProperties(
             String list,
             String update,
             String delete
+    ) {
+    }
+
+    public record Cart(
+            String addProduct,
+            String removeProduct,
+            String get,
+            String checkout
     ) {
     }
 }
