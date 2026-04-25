@@ -5,6 +5,8 @@ import com.itm.api_gateway.messaging.NatsRequestClient;
 import com.itm.api_gateway.messaging.NatsResponse;
 import com.itm.api_gateway.web.productgateway.dto.CreateProductRequest;
 import com.itm.api_gateway.web.productgateway.dto.UpdateProductRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,25 +35,35 @@ public class ProductGatewayController {
     }
 
     @PostMapping
+    @Operation(
+            summary = "Crear producto",
+            description = "Crea un producto en el catalogo. Ejemplo real: categoria NORMAL o TEMPORADA_PASADA y precio decimal mayor o igual a 0."
+    )
     public ResponseEntity<?> create(@Valid @RequestBody CreateProductRequest body) {
         NatsResponse response = natsRequestClient.request(properties.subject().product().create(), body);
         return toHttpResponse(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
+    @Operation(summary = "Obtener producto por ID", description = "Consulta un producto existente por su identificador.")
+    public ResponseEntity<?> getById(@Parameter(example = "1") @PathVariable Long id) {
         NatsResponse response = natsRequestClient.request(properties.subject().product().get(), Map.of("id", id));
         return toHttpResponse(response, HttpStatus.OK);
     }
 
     @GetMapping
+    @Operation(summary = "Listar productos", description = "Retorna todos los productos del catalogo.")
     public ResponseEntity<?> getAll() {
         NatsResponse response = natsRequestClient.request(properties.subject().product().list(), Map.of());
         return toHttpResponse(response, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest body) {
+    @Operation(
+            summary = "Actualizar producto",
+            description = "Actualiza nombre, descripcion, categoria y precio original de un producto existente."
+    )
+    public ResponseEntity<?> update(@Parameter(example = "1") @PathVariable Long id, @Valid @RequestBody UpdateProductRequest body) {
         Map<String, Object> command = new HashMap<>();
         command.put("id", id);
         command.put("name", body.name());
@@ -63,7 +75,8 @@ public class ProductGatewayController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    @Operation(summary = "Eliminar producto", description = "Elimina un producto por su ID.")
+    public ResponseEntity<?> delete(@Parameter(example = "1") @PathVariable Long id) {
         NatsResponse response = natsRequestClient.request(properties.subject().product().delete(), Map.of("id", id));
         return toHttpResponse(response, HttpStatus.NO_CONTENT);
     }
