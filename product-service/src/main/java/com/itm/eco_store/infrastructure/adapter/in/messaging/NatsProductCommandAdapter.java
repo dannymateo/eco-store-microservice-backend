@@ -13,15 +13,12 @@ import com.itm.eco_store.infrastructure.adapter.in.messaging.mapper.ProductMappe
 import io.nats.client.Connection;
 import io.nats.client.Dispatcher;
 import io.nats.client.Message;
-import io.nats.client.Nats;
-import io.nats.client.Options;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -37,9 +34,9 @@ public class NatsProductCommandAdapter implements InitializingBean, DisposableBe
     private final GetProductUseCase getProductUseCase;
     private final UpdateProductUseCase updateProductUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
+    private final Connection connection;
 
     private final Map<String, MessageHandler> handlers = new HashMap<>();
-    private Connection connection;
     private Dispatcher dispatcher;
 
     public NatsProductCommandAdapter(
@@ -49,7 +46,8 @@ public class NatsProductCommandAdapter implements InitializingBean, DisposableBe
             CreateProductUseCase createProductUseCase,
             GetProductUseCase getProductUseCase,
             UpdateProductUseCase updateProductUseCase,
-            DeleteProductUseCase deleteProductUseCase
+            DeleteProductUseCase deleteProductUseCase,
+            Connection connection
     ) {
         this.properties = properties;
         this.objectMapper = objectMapper;
@@ -58,12 +56,14 @@ public class NatsProductCommandAdapter implements InitializingBean, DisposableBe
         this.getProductUseCase = getProductUseCase;
         this.updateProductUseCase = updateProductUseCase;
         this.deleteProductUseCase = deleteProductUseCase;
+        this.connection = connection;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         registerHandlers();
-        connectAndSubscribe();
+        dispatcher = connection.createDispatcher(this::dispatchMessage);
+        handlers.keySet().forEach(dispatcher::subscribe);
     }
 
     @Override
@@ -75,9 +75,6 @@ public class NatsProductCommandAdapter implements InitializingBean, DisposableBe
             dispatcher.unsubscribe(properties.subject().product().update());
             dispatcher.unsubscribe(properties.subject().product().delete());
         }
-        if (connection != null) {
-            connection.close();
-        }
     }
 
     private void registerHandlers() {
@@ -86,18 +83,6 @@ public class NatsProductCommandAdapter implements InitializingBean, DisposableBe
         handlers.put(properties.subject().product().list(), this::handleGetAll);
         handlers.put(properties.subject().product().update(), this::handleUpdate);
         handlers.put(properties.subject().product().delete(), this::handleDelete);
-    }
-
-    private void connectAndSubscribe() throws Exception {
-        Options options = new Options.Builder()
-                .server(properties.url())
-                .connectionTimeout(Duration.ofSeconds(5))
-                .build();
-
-        connection = Nats.connect(options);
-        dispatcher = connection.createDispatcher(this::dispatchMessage);
-
-        handlers.keySet().forEach(dispatcher::subscribe);
     }
 
     private void dispatchMessage(Message message) {
@@ -140,7 +125,8 @@ public class NatsProductCommandAdapter implements InitializingBean, DisposableBe
                 command.name(),
                 command.description(),
                 command.category(),
-                command.originalPrice()
+                command.originalPrice(),
+                command.stock()
         );
         var updated = updateProductUseCase.update(id, productMapper.toDomain(dto));
         return productMapper.toResponse(updated);

@@ -48,4 +48,7 @@ public class ProductJpaEntity {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal finalPrice;
+
+    @Column(nullable = false)
+    private Integer stock;
 }
