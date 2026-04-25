@@ -2,6 +2,7 @@ package com.itm.api_gateway.web.productgateway.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
 
 @Schema(
         description = "Payload para actualizar un producto existente",
-        example = "{\"name\":\"Camiseta Eco Bamboo Premium\",\"description\":\"Version premium con costuras reforzadas\",\"category\":\"TEMPORADA_PASADA\",\"originalPrice\":99.90}"
+        example = "{\"name\":\"Camiseta Eco Bamboo Premium\",\"description\":\"Version premium con costuras reforzadas\",\"category\":\"TEMPORADA_PASADA\",\"originalPrice\":99.90,\"stock\":12}"
 )
 public record UpdateProductRequest(
         @Schema(description = "Nombre del producto", example = "Camiseta Eco Bamboo Premium", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -23,6 +24,10 @@ public record UpdateProductRequest(
         @Schema(description = "Precio original del producto", example = "99.90", minimum = "0", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull(message = "El precio original es obligatorio")
         @DecimalMin(value = "0.0", inclusive = true, message = "El precio debe ser >= 0")
-        BigDecimal originalPrice
+        BigDecimal originalPrice,
+        @Schema(description = "Stock disponible", example = "12", minimum = "0", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "El stock es obligatorio")
+        @Min(value = 0, message = "El stock debe ser >= 0")
+        Integer stock
 ) {
 }

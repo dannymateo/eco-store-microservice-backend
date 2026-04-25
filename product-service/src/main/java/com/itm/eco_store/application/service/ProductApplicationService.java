@@ -57,6 +57,7 @@ public class ProductApplicationService implements
                 .description(product.getDescription())
                 .category(product.getCategory())
                 .priceInfo(product.getPriceInfo())
+                .stock(product.getStock())
                 .build();
         return repository.update(toSave);
     }
