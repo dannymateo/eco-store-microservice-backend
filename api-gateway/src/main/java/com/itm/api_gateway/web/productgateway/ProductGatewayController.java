@@ -70,6 +70,7 @@ public class ProductGatewayController {
         command.put("description", body.description());
         command.put("category", body.category());
         command.put("originalPrice", body.originalPrice());
+        command.put("stock", body.stock());
         NatsResponse response = natsRequestClient.request(properties.subject().product().update(), command);
         return toHttpResponse(response, HttpStatus.OK);
     }
