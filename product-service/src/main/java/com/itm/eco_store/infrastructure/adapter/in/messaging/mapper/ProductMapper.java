@@ -18,7 +18,8 @@ public interface ProductMapper {
                 dto.getName(),
                 dto.getDescription(),
                 dto.getCategory(),
-                dto.getOriginalPrice()
+                dto.getOriginalPrice(),
+                dto.getStock()
         );
     }
 
@@ -30,7 +31,8 @@ public interface ProductMapper {
                 dto.getName(),
                 dto.getDescription(),
                 dto.getCategory(),
-                dto.getOriginalPrice()
+                dto.getOriginalPrice(),
+                dto.getStock()
         );
     }
 

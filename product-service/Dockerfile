@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
 COPY pom.xml .
 COPY api-gateway/pom.xml api-gateway/pom.xml
 COPY product-service/pom.xml product-service/pom.xml
+COPY cart-service/pom.xml cart-service/pom.xml
 COPY product-service/src product-service/src
 
 RUN mvn -pl product-service -am clean package -DskipTests

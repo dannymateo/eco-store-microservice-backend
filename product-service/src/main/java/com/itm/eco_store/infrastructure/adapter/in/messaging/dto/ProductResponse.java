@@ -11,6 +11,7 @@ public record ProductResponse(
         Category category,
         BigDecimal originalPrice,
         BigDecimal discountPercent,
-        BigDecimal finalPrice
+        BigDecimal finalPrice,
+        Integer stock
 ) {
 }

@@ -21,6 +21,7 @@
     <modules>
         <module>api-gateway</module>
         <module>product-service</module>
+        <module>cart-service</module>
     </modules>
 
     <properties>
