@@ -7,6 +7,7 @@ COPY pom.xml .
 COPY api-gateway/pom.xml api-gateway/pom.xml
 COPY api-gateway/src api-gateway/src
 COPY product-service/pom.xml product-service/pom.xml
+COPY cart-service/pom.xml cart-service/pom.xml
 
 RUN mvn -pl api-gateway -am clean package -DskipTests
 
