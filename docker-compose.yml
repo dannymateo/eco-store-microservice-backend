@@ -5,6 +5,18 @@ services:
     ports:
       - "4222:4222"
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: eco-store-product-db
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_USER: product_user
+      POSTGRES_PASSWORD: product_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - product-db-data:/var/lib/postgresql/data
+
   product-service:
     build:
       context: .
@@ -13,8 +25,13 @@ services:
     environment:
       NATS_URL: nats://nats:4222
       SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/product_db
+      SPRING_DATASOURCE_USERNAME: product_user
+      SPRING_DATASOURCE_PASSWORD: product_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on:
       - nats
+      - postgres
     ports:
       - "8081:8081"
 
@@ -31,3 +48,6 @@ services:
       - product-service
     ports:
       - "8080:8080"
+
+volumes:
+  product-db-data:
