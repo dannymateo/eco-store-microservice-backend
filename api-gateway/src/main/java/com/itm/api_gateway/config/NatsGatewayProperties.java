@@ -10,8 +10,7 @@ public record NatsGatewayProperties(
 ) {
     public record Subject(
             Product product,
-            Cart cart,
-            Checkout checkout
+            Cart cart
     ) {
     }
 
@@ -29,12 +28,6 @@ public record NatsGatewayProperties(
             String removeProduct,
             String get,
             String checkout
-    ) {
-    }
-
-    public record Checkout(
-            String process,
-            String confirm
     ) {
     }
 }
