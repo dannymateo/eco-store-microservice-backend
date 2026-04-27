@@ -11,7 +11,9 @@ public record NatsGatewayProperties(
     public record Subject(
             Product product,
             Cart cart,
-            Checkout checkout
+            Checkout checkout,
+            Auth auth,
+            User user
     ) {
     }
 
@@ -35,6 +37,21 @@ public record NatsGatewayProperties(
     public record Checkout(
             String process,
             String confirm
+    ) {
+    }
+
+    public record Auth(
+            String login,
+            String register,
+            String forgotPassword,
+            String resetPassword
+    ) {
+    }
+
+    public record User(
+            String create,
+            String get,
+            String update
     ) {
     }
 }

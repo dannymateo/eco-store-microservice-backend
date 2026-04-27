@@ -8,7 +8,8 @@ COPY api-gateway/pom.xml api-gateway/pom.xml
 COPY product-service/pom.xml product-service/pom.xml
 COPY cart-service/pom.xml cart-service/pom.xml
 COPY checkout-service/pom.xml checkout-service/pom.xml
-COPY product-service/src product-service/src
+COPY users-service/pom.xml users-service/pom.xml
+COPY users-service/src users-service/src
 
 RUN mvn -pl product-service -am clean package -DskipTests
 

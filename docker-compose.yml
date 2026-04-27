@@ -90,6 +90,37 @@ services:
     ports:
       - "8083:8083"
 
+  users-db:
+    image: postgres:16-alpine
+    container_name: eco-store-users-db
+    environment:
+      POSTGRES_DB: users_db
+      POSTGRES_USER: users_user
+      POSTGRES_PASSWORD: users_pass
+    ports:
+      - "5434:5432"
+    volumes:
+      - users-db-data:/var/lib/postgresql/data
+
+  users-service:
+    build:
+      context: .
+      dockerfile: users-service/Dockerfile
+    container_name: eco-store-users-service
+    environment:
+      NATS_URL: nats://nats:4222
+      SERVER_PORT: 8084
+      SPRING_DATASOURCE_URL: jdbc:postgresql://users-db:5432/users_db
+      SPRING_DATASOURCE_USERNAME: users_user
+      SPRING_DATASOURCE_PASSWORD: users_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: 65c77a90b452fc8d9b6cb6e7e12090ca2a5b144faaccc23cff0169734974a525
+    depends_on:
+      - nats
+      - users-db
+    ports:
+      - "8084:8084"
+
   api-gateway:
     build:
       context: .
@@ -109,3 +140,4 @@ services:
 volumes:
   product-db-data:
   checkout-db-data:
+  users-db-data:

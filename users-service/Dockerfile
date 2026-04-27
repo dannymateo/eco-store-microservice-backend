@@ -9,14 +9,14 @@ COPY product-service/pom.xml product-service/pom.xml
 COPY cart-service/pom.xml cart-service/pom.xml
 COPY checkout-service/pom.xml checkout-service/pom.xml
 COPY users-service/pom.xml users-service/pom.xml
-COPY checkout-service/src checkout-service/src
+COPY users-service/src users-service/src
 
-RUN mvn -pl checkout-service -am clean package -DskipTests
+RUN mvn -pl users-service -am clean package -DskipTests
 
 FROM eclipse-temurin:25-jdk
 WORKDIR /app
 
-COPY --from=build /workspace/checkout-service/target/checkout-service-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /workspace/users-service/target/users-service-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE 8083
+EXPOSE 8084
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
